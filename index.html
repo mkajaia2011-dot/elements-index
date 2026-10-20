@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ქიმიური ელემენტების ინტერაქტიული ჰაბი | Chemistry Hub</title>
+    <meta name="description" content="მენდელეევის პერიოდული სისტემის ინტერაქტიული პორტალი: ელემენტების ძიება, სახელის გარდაქმნა ქიმიურ ელემენტებად, ინიციალების გენერატორი და ვიქტორინა.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Noto+Sans+Georgian:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-surface: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-card-hover: rgba(51, 65, 85, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(56, 189, 248, 0.35);
+            
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --secondary: #818cf8;
+            --accent: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-faint: #64748b;
+            
+            /* Element Category Colors */
+            --cat-alkali: #f87171;
+            --cat-alkaline: #fb923c;
+            --cat-transition: #38bdf8;
+            --cat-post-trans: #818cf8;
+            --cat-metalloid: #2dd4bf;
+            --cat-nonmetal: #4ade80;
+            --cat-halogen: #facc15;
+            --cat-noble: #c084fc;
+            --cat-lanthanide: #f472b6;
+            --cat-actinide: #e879f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Georgian', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(129, 140, 248, 0.08) 0%, transparent 45%),
+                linear-gradient(180deg, #090d16 0%, #0d1527 100%);
+            background-attachment: fixed;
+            padding: 30px 16px 80px;
+        }
+
+        /* App Container */
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+            max-width: 750px;
+        }
+
+        .app-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 4.5vw, 42px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: clamp(14px, 1.8vw, 16px);
+            line-height: 1.6;
+        }
+
+        /* Navigation Tabs */
+        .tabs-nav {
+            display: flex;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 6px;
+            gap: 6px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 860px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            flex: 1 1 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn .tab-icon {
+            font-size: 18px;
+            transition: transform 0.25s ease;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+            color: #ffffff;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);
+        }
+
+        .tab-btn.active .tab-icon {
+            transform: scale(1.15);
+        }
+
+        /* Tab Content Section */
+        .tab-panel {
+            display: none;
+            width: 100%;
+            animation: panelFadeIn 0.35s ease forwards;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Control Panel / Search Bars */
+        .control-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 580px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-faint);
+            font-size: 18px;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+
+        .app-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            font-size: 16px;
+            font-weight: 500;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            background-color: #1e293b;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-input:focus + .search-icon {
+            color: var(--primary);
+        }
+
+        .app-input.large-center {
+            padding-left: 20px;
+            text-align: center;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Category Filter Chips */
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-width: 950px;
+        }
+
+        .chip {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 7px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .chip:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .chip.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Alphabet Selector for Initials */
+        .alpha-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            max-width: 650px;
+        }
+
+        .alpha-btn {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .alpha-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .alpha-btn.active {
+            background: var(--primary);
+            color: #090d16;
+            font-weight: 800;
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Results Stats */
+        .results-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 18px;
+            padding: 0 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Elements Grid */
+        .elements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Element Card */
+        .element-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            height: 230px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .element-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color, var(--primary));
+            transition: height 0.25s ease;
+        }
+
+        .element-card:hover {
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            border-color: var(--accent-color, var(--primary));
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .element-card:hover::before {
+            height: 6px;
+        }
+
+        .card-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-num {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .card-mass-top {
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: var(--text-faint);
+        }
+
+        .card-symbol {
+            font-family: 'Fira Code', monospace;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent-color, var(--primary));
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+            letter-spacing: -1px;
+            line-height: 1;
+            margin: 4px 0;
+        }
+
+        .card-bottom {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .card-geo-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-eng-name {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .card-category-tag {
+            margin-top: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-color, var(--text-muted));
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Banner Breakdown Mode (Name Speller) */
+        .name-banner-container {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 28px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .banner-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .name-tiles-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .name-tile {
+            width: 110px;
+            height: 125px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 2px solid var(--tile-color, var(--primary));
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.2);
+            animation: tilePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+        }
+
+        @keyframes tilePop {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .name-tile .tile-num {
+            align-self: flex-start;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .name-tile .tile-sym {
+            font-family: 'Fira Code', monospace;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--tile-color, var(--primary));
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+            line-height: 1;
+        }
+
+        .name-tile .tile-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .name-tile.regular-char {
+            border-color: #475569;
+            background: rgba(30, 41, 59, 0.4);
+            cursor: default;
+        }
+
+        .name-tile.regular-char .tile-sym {
+            color: #94a3b8;
+        }
+
+        /* Action Buttons */
+        .actions-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: #090d16;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border-color: var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Quiz Component */
+        .quiz-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 36px 28px;
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .quiz-score-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .quiz-element-display {
+            width: 140px;
+            height: 160px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);
+        }
+
+        .quiz-element-display .q-num {
+            align-self: flex-start;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .quiz-element-display .q-sym {
+            font-family: 'Fira Code', monospace;
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .quiz-element-display .q-hint {
+            font-size: 11px;
+            color: var(--text-faint);
+        }
+
+        .quiz-question-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 28px;
+        }
+
+        .quiz-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 560px) {
+            .quiz-options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quiz-opt-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .quiz-opt-btn:hover {
+            border-color: var(--primary);
+            background: rgba(56, 189, 248, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .quiz-opt-btn.correct {
+            background: rgba(16, 185, 129, 0.25) !important;
+            border-color: var(--success) !important;
+            color: #ffffff !important;
+        }
+
+        .quiz-opt-btn.wrong {
+            background: rgba(244, 63, 94, 0.25) !important;
+            border-color: var(--accent) !important;
+            color: #ffffff !important;
+        }
+
+        .quiz-feedback {
+            min-height: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Modal Details */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #0f172a;
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 540px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-backdrop.open .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        .modal-header-preview {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .modal-big-symbol {
+            width: 90px;
+            height: 100px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+        }
+
+        .modal-big-symbol .m-num {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            align-self: flex-start;
+        }
+
+        .modal-big-symbol .m-sym {
+            font-family: 'Fira Code', monospace;
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .modal-title-info h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .modal-title-info .modal-eng-title {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .modal-props-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .prop-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .prop-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prop-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'Noto Sans Georgian', 'Fira Code', sans-serif;
+        }
+
+        .modal-description {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            border-left: 3px solid var(--primary);
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-bottom: 6px;
+        }
+
+        .empty-state-sub {
+            font-size: 14px;
+            color: var(--text-faint);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 12px 60px;
+            }
+            .tabs-nav {
+                border-radius: 14px;
+            }
+            .tab-btn {
+                flex: 1 1 100%;
+                padding: 10px 14px;
+            }
+            .elements-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 14px;
+            }
+            .element-card {
+                height: 205px;
+                padding: 12px;
+            }
+            .card-symbol {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <div class="app-badge">
+                <span>⚛️</span>
+                <span>ინტერაქტიული ქიმია</span>
+            </div>
+            <h1>ქიმიური ელემენტების ჰაბი</h1>
+            <p class="subtitle">მენდელეევის პერიოდული სისტემის ელემენტების ძიება, ადამიანის სახელის ქიმიური გაშიფვრა, ინიციალების გენერატორი და სახალისო ვიქტორინა.</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('explorer')">
+                <span class="tab-icon">🔍</span>
+                <span>ელემენტების კატალოგი</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('name')">
+                <span class="tab-icon">✨</span>
+                <span>სახელი ➔ ელემენტები</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('initials')">
+                <span class="tab-icon">🔤</span>
+                <span>ინიციალები ➔ ელემენტები</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('quiz')">
+                <span class="tab-icon">🎮</span>
+                <span>ქიმიის ვიქტორინა</span>
+            </button>
+        </nav>
+
+        <!-- TAB 1: Elements Catalog / Explorer -->
+        <section class="tab-panel active" id="tab-explorer">
+            <div class="control-panel">
+                <div class="search-wrapper">
+                    <input type="text" id="explorerSearch" class="app-input" placeholder="მოძებნე სახელით (ოქრო / Gold), სიმბოლოთი (Au) ან ატომური ნომრით (79)..." oninput="filterExplorer()">
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <div class="filter-chips" id="categoryChips">
+                    <button class="chip active" onclick="setCategoryFilter('all')">ყველა</button>
+                    <button class="chip" onclick="setCategoryFilter('alkali')"><span class="dot" style="background:var(--cat-alkali)"></span>ტუტე ლითონები</button>
+                    <button class="chip" onclick="setCategoryFilter('alkaline')"><span class="dot" style="background:var(--cat-alkaline)"></span>ტუტემიწა</button>
+                    <button class="chip" onclick="setCategoryFilter('transition')"><span class="dot" style="background:var(--cat-transition)"></span>გარდამავალი ლითონები</button>
+                    <button class="chip" onclick="setCategoryFilter('post-transition')"><span class="dot" style="background:var(--cat-post-trans)"></span>პოსტ-გარდამავალი</button>
+                    <button class="chip" onclick="setCategoryFilter('metalloid')"><span class="dot" style="background:var(--cat-metalloid)"></span>მეტალოიდები</button>
+                    <button class="chip" onclick="setCategoryFilter('nonmetal')"><span class="dot" style="background:var(--cat-nonmetal)"></span>არალითონები</button>
+                    <button class="chip" onclick="setCategoryFilter('halogen')"><span class="dot" style="background:var(--cat-halogen)"></span>ჰალოგენები</button>
+                    <button class="chip" onclick="setCategoryFilter('noble')"><span class="dot" style="background:var(--cat-noble)"></span>ინერტული აირები</button>
+                    <button class="chip" onclick="setCategoryFilter('lanthanide')"><span class="dot" style="background:var(--cat-lanthanide)"></span>ლანთანოიდები</button>
+                    <button class="chip" onclick="setCategoryFilter('actinide')"><span class="dot" style="background:var(--cat-actinide)"></span>აქტინოიდები</button>
+                </div>
+            </div>
+
+            <div class="results-bar">
+                <div>ნაპოვნია: <span class="results-count" id="explorerCount">0</span> ელემენტი</div>
+                <div style="font-size:12px; color:var(--text-faint);">💡 დააჭირეთ ბარათს დეტალური ინფორმაციისთვის</div>
+            </div>
+
+            <div class="elements-grid" id="explorerGrid"></div>
+        </section>
+
+        <!-- TAB 2: Name to Elements -->
+        <section class="tab-panel" id="tab-name">
+            <div class="control-panel">
+                <div style="text-align:center; max-width: 520px; margin-bottom: 4px;">
+                    <h3 style="font-size:18px; margin-bottom:6px; color:#ffffff;">შეიყვანეთ თქვენი ან მეგობრის სახელი</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">სისტემა ავტომატურად ააწყობს სახელს ქიმიური ელემენტების ბლოკებით და გამოაჩენს შემადგენელ ყველა ელემენტს (მაგ: Giorgi, Eliso, Badri, Maia, Luka, Nino...)</p>
+                </div>
+
+                <div class="search-wrapper">
+                    <input type="text" id="nameInput" class="app-input large-center" placeholder="მაგ: Giorgi, Eliso, Badri, Maia..." oninput="processNameInput()">
+                </div>
+                
+                <div class="actions-row">
+                    <button class="btn btn-secondary" onclick="setExampleName('Giorgi')">Giorgi (გიორგი)</button>
+                    <button class="btn btn-secondary" onclick="setExampleName('Eliso')">Eliso (ელისო)</button>
+                    <button class="btn btn-secondary" onclick="setExampleName('Badri')">Badri (ბადრი)</button>
+                    <button class="btn btn-secondary" onclick="setExampleName('Maia')">Maia (მაია)</button>
+                    <button class="btn btn-secondary" onclick="setExampleName('Nino')">Nino (ნინო)</button>
+                    <button class="btn btn-secondary" onclick="setExampleName('Sandro')">Sandro (სანდრო)</button>
+                </div>
+            </div>
+
+            <!-- Visual Name Spell Banner -->
+            <div class="name-banner-container" id="nameBannerContainer" style="display:none;">
+                <div class="banner-title">✨ თქვენი სახელის ქიმიური ფორმულა</div>
+                <div class="name-tiles-row" id="nameTilesRow"></div>
+                <div style="font-size:12px; color:var(--text-muted);">🔬 თითოეული ფილა წარმოადგენს პერიოდული სისტემის უნიკალურ ელემენტს</div>
+            </div>
+
+            <div class="results-bar" id="nameResultsBar" style="display:none;">
+                <div>სახელში ნაპოვნი ელემენტები: <span class="results-count" id="nameCount">0</span></div>
+            </div>
+
+            <div class="elements-grid" id="nameGrid"></div>
+        </section>
+
+        <!-- TAB 3: Initials to Elements -->
+        <section class="tab-panel" id="tab-initials">
+            <div class="control-panel">
+                <div style="text-align:center; max-width: 520px; margin-bottom: 4px;">
+                    <h3 style="font-size:18px; margin-bottom:6px; color:#ffffff;">სახელის ინიციალი ➔ ქიმიური ელემენტები</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">ჩაწერეთ სახელი ან აირჩიეთ ინგლისური ალფავიტის ასო, რათა იხილოთ შესაბამისი ქიმიური ელემენტები.</p>
+                </div>
+
+                <div class="search-wrapper">
+                    <input type="text" id="initialInput" class="app-input large-center" placeholder="ჩაწერეთ სახელი (მაგ: Giorgi, Badri, Eliso, Maia)..." oninput="processInitialInput()">
+                </div>
+
+                <div class="alpha-grid" id="alphaGrid">
+                    <!-- A to Z buttons generated by JS -->
+                </div>
+            </div>
+
+            <div class="results-bar">
+                <div>შესაბამისი ელემენტები: <span class="results-count" id="initialCount">0</span></div>
+            </div>
+
+            <div class="elements-grid" id="initialGrid"></div>
+        </section>
+
+        <!-- TAB 4: Chemistry Quiz -->
+        <section class="tab-panel" id="tab-quiz">
+            <div class="quiz-card">
+                <div class="quiz-header">
+                    <span>🏆 ქიმიის ტესტი</span>
+                    <span class="quiz-score-badge">ქულა: <span id="quizScore">0</span> / <span id="quizTotal">0</span></span>
+                </div>
+
+                <div class="quiz-element-display" id="quizDisplay">
+                    <span class="q-num" id="quizElemNum">1</span>
+                    <span class="q-sym" id="quizElemSym">H</span>
+                    <span class="q-hint">Atomic Mass: <span id="quizElemMass">1.008</span></span>
+                </div>
+
+                <div class="quiz-question-text" id="quizQuestionText">რა ჰქვია ამ ქიმიურ ელემენტს?</div>
+
+                <div class="quiz-options-grid" id="quizOptionsGrid">
+                    <!-- 4 options generated here -->
+                </div>
+
+                <div class="quiz-feedback" id="quizFeedback"></div>
+
+                <button class="btn" id="nextQuestionBtn" onclick="generateQuizQuestion()" style="display:none;">
+                    <span>შემდეგი შეკითხვა ➔</span>
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modal for Detailed Element Information -->
+    <div class="modal-backdrop" id="elementModal" onclick="closeModalOnBackdrop(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            
+            <div class="modal-header-preview">
+                <div class="modal-big-symbol" id="modalSymbolBox">
+                    <span class="m-num" id="modalNum">79</span>
+                    <span class="m-sym" id="modalSym">Au</span>
+                </div>
+                <div class="modal-title-info">
+                    <h2 id="modalGeoName">ოქრო</h2>
+                    <div class="modal-eng-title" id="modalEngName">Gold (Aurum)</div>
+                    <span class="card-category-tag" id="modalCategory">გარდამავალი ლითონი</span>
+                </div>
+            </div>
+
+            <div class="modal-props-grid">
+                <div class="prop-box">
+                    <div class="prop-label">ატომური მასა</div>
+                    <div class="prop-value" id="modalMass">196.97 u</div>
+                </div>
+                <div class="prop-box">
+                    <div class="prop-label">აგრეგატული მდგომარეობა (20°C)</div>
+                    <div class="prop-value" id="modalPhase">მყარი</div>
+                </div>
+                <div class="prop-box">
+                    <div class="prop-label">პერიოდი / ჯგუფი</div>
+                    <div class="prop-value" id="modalGroup">პერიოდი 6, ჯგუფი 11</div>
+                </div>
+                <div class="prop-box">
+                    <div class="prop-label">აღმომჩენი / წარმოშობა</div>
+                    <div class="prop-value" id="modalDiscovery">უძველესი დროიდან</div>
+                </div>
+            </div>
+
+            <div class="modal-description" id="modalDescription">
+                ოქრო არის კეთილშობილი ლითონი, რომელიც გამოირჩევა მაღალი ქიმიური მდგრადობით, შესანიშნავი ელექტროგამტარობითა და განუმეორებელი ბზინვარებით.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // ქიმიური ელემენტების სრული და გაფართოებული ბაზა
+        // ----------------------------------------------------
+        const elementsDB = [
+            { number: 1, symbol: "H", geoName: "წყალბადი", engName: "Hydrogen", mass: 1.008, category: "nonmetal", catName: "არალითონი", phase: "აირი", group: "პერიოდი 1, ჯგუფი 1", discovery: "ჰენრი კავენდიში (1766)", desc: "სამყაროში ყველაზე გავრცელებული და მსუბუქი ელემენტი. შედის წყლისა და ყველა ორგანული ნაერთის შემადგენლობაში." },
+            { number: 2, symbol: "He", geoName: "ჰელიუმი", engName: "Helium", mass: 4.0026, category: "noble", catName: "ინერტული აირი", phase: "აირი", group: "პერიოდი 1, ჯგუფი 18", discovery: "პიერ ჟანსენი (1868)", desc: "ინერტული, არატოქსიკური და ჰაერზე მსუბუქი აირი. ფართოდ გამოიყენება აეროსტატებში, საჰაერო ბუშტებსა და კრიოგენიკაში." },
+            { number: 3, symbol: "Li", geoName: "ლითიუმი", engName: "Lithium", mass: 6.94, category: "alkali", catName: "ტუტე ლითონი", phase: "მყარი", group: "პერიოდი 2, ჯგუფი 1", discovery: "იოჰან არფვედსონი (1817)", desc: "ყველაზე მსუბუქი მყარი ლითონი. შეუცვლელია თანამედროვე ლითიუმ-იონური ბატარეებისა და აკუმულატორებისთვის." },
+            { number: 4, symbol: "Be", geoName: "ბერილიუმი", engName: "Beryllium", mass: 9.0122, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 2, ჯგუფი 2", discovery: "ლუი ვოკლენი (1798)", desc: "მსუბუქი, მაგრამ ძალიან გამძლე ლითონი. გამოიყენება აეროკოსმოსურ ინჟინერიასა და რენტგენის მილაკების სარკმლებში." },
+            { number: 5, symbol: "B", geoName: "ბორი", engName: "Boron", mass: 10.81, category: "metalloid", catName: "მეტალოიდი", phase: "მყარი", group: "პერიოდი 2, ჯგუფი 13", discovery: "ჟოზეფ გეი-ლუსაკი (1808)", desc: "მეტალოიდი, რომელიც გამოიყენება თერმომდგრადი ბოროსილიკატური მინის (პაირექსი) და ნახევარგამტარების წარმოებაში." },
+            { number: 6, symbol: "C", geoName: "ნახშირბადი", engName: "Carbon", mass: 12.011, category: "nonmetal", catName: "არალითონი", phase: "მყარი", group: "პერიოდი 2, ჯგუფი 14", discovery: "უძველესი დროიდან", desc: "ორგანული სიცოცხლის ფუნდამენტური საფუძველი. არსებობს გრაფიტის, ალმასის, გრაფენისა და ფულერენების სახით." },
+            { number: 7, symbol: "N", geoName: "აზოტი", engName: "Nitrogen", mass: 14.007, category: "nonmetal", catName: "არალითონი", phase: "აირი", group: "პერიოდი 2, ჯგუფი 15", discovery: "დანიელ რეზერფორდი (1772)", desc: "დედამიწის ატმოსფეროს ძირითადი კომპონენტი (დაახლ. 78%). აუცილებელია ცილებისა და ნუკლეინის მჟავების (დნმ/რნმ) სინთეზისთვის." },
+            { number: 8, symbol: "O", geoName: "ჟანგბადი", engName: "Oxygen", mass: 15.999, category: "nonmetal", catName: "არალითონი", phase: "აირი", group: "პერიოდი 2, ჯგუფი 16", discovery: "ჯოზეფ პრისტლი (1774)", desc: "სუნთქვისა და წვის პროცესების უმთავრესი ელემენტი. დედამიწის ქერქში ყველაზე გავრცელებული ქიმიური ელემენტია." },
+            { number: 9, symbol: "F", geoName: "ფტორი", engName: "Fluorine", mass: 18.998, category: "halogen", catName: "ჰალოგენი", phase: "აირი", group: "პერიოდი 2, ჯგუფი 17", discovery: "ანრი მუასანი (1886)", desc: "ყველაზე ძლიერი ელექტროუარყოფითობის მქონე ელემენტი. აქტიურად ურთიერთქმედებს თითქმის ყველა სხვა ნივთიერებასთან." },
+            { number: 10, symbol: "Ne", geoName: "ნეონი", engName: "Neon", mass: 20.180, category: "noble", catName: "ინერტული აირი", phase: "აირი", group: "პერიოდი 2, ჯგუფი 18", discovery: "უილიამ რამზაი (1898)", desc: "ინერტული აირი, რომელიც ელექტრული განმუხტვისას კაშკაშა ნარინჯისფერ-წითელ ნათებას გამოსცემს. გამოიყენება ნეონის რეკლამებში." },
+            { number: 11, symbol: "Na", geoName: "ნატრიუმი", engName: "Sodium", mass: 22.990, category: "alkali", catName: "ტუტე ლითონი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 1", discovery: "ჰემფრი დეივი (1807)", desc: "რბილი, ვერცხლისფერი ტუტე ლითონი. სუფრის მარილის (NaCl) მთავარი კომპონენტი, სასიცოცხლოდ მნიშვნელოვანი ელექტროლიტი ორგანიზმში." },
+            { number: 12, symbol: "Mg", geoName: "მაგნიუმი", engName: "Magnesium", mass: 24.305, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 2", discovery: "ჯოზეფ ბლეკი (1755)", desc: "მსუბუქი მეტალი, რომელიც შედის ქლოროფილის მოლეკულის ცენტრში და უზრუნველყოფს ფოტოსინთეზს მცენარეებში." },
+            { number: 13, symbol: "Al", geoName: "ალუმინი", engName: "Aluminium", mass: 26.982, category: "post-transition", catName: "პოსტ-გარდამავალი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 13", discovery: "ჰანს ერსტედი (1825)", desc: "მსუბუქი, კოროზიამედეგი და ფართოდ გამოყენებადი ლითონი თვითმფრინავთმშენებლობაში, ელექტროტექნიკასა და შეფუთვაში." },
+            { number: 14, symbol: "Si", geoName: "სილიციუმი", engName: "Silicon", mass: 28.085, category: "metalloid", catName: "მეტალოიდი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 14", discovery: "იენს ბერცელიუსი (1824)", desc: "თანამედროვე ციფრული ეპოქისა და მიკროჩიპების ხერხემალი. ქვიშისა და მინის მთავარი ქიმიური საფუძველი." },
+            { number: 15, symbol: "P", geoName: "ფოსფორი", engName: "Phosphorus", mass: 30.974, category: "nonmetal", catName: "არალითონი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 15", discovery: "ჰენიგ ბრანდი (1669)", desc: "შედის დნმ-ის, რნმ-ის, ატფ-ისა (ენერგიის მატარებელი) და ძვლების შემადგენლობაში. გამოიყენება ასანთებსა და სასუქებში." },
+            { number: 16, symbol: "S", geoName: "გოგირდი", engName: "Sulfur", mass: 32.06, category: "nonmetal", catName: "არალითონი", phase: "მყარი", group: "პერიოდი 3, ჯგუფი 16", discovery: "უძველესი დროიდან", desc: "ყვითელი ფერის მყარი არამეტალი. გამოიყენება გოგირდმჟავას, რეზინის ვულკანიზაციისა და მედიკამენტების წარმოებაში." },
+            { number: 17, symbol: "Cl", geoName: "ქლორი", engName: "Chlorine", mass: 35.45, category: "halogen", catName: "ჰალოგენი", phase: "აირი", group: "პერიოდი 3, ჯგუფი 17", discovery: "კარლ შეელე (1774)", desc: "მომწვანო-მოყვითალო მახრჩობელა აირი. ფართოდ გამოიყენება წყლის დეზინფექციისა და პოლიმერების (PVC) წარმოებაში." },
+            { number: 18, symbol: "Ar", geoName: "არგონი", engName: "Argon", mass: 39.948, category: "noble", catName: "ინერტული აირი", phase: "აირი", group: "პერიოდი 3, ჯგუფი 18", discovery: "ლორდ რელეი (1894)", desc: "ატმოსფეროში მესამე ყველაზე გავრცელებული აირი (0.93%). გამოიყენება შედუღებისას დამცავ ინერტულ გარემოდ." },
+            { number: 19, symbol: "K", geoName: "კალიუმი", engName: "Potassium", mass: 39.098, category: "alkali", catName: "ტუტე ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 1", discovery: "ჰემფრი დეივი (1807)", desc: "აქტიური ტუტე ლითონი. აუცილებელია გულის მუშაობისთვის, ნერვული იმპულსების გადაცემისა და მცენარეთა ზრდისთვის." },
+            { number: 20, symbol: "Ca", geoName: "კალციუმი", engName: "Calcium", mass: 40.078, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 2", discovery: "ჰემფრი დეივი (1808)", desc: "ძვლების, კბილების, ნიჟარებისა და სამშენებლო კირქვის/მარმარილოს ძირითადი შემადგენელი ელემენტი." },
+            { number: 22, symbol: "Ti", geoName: "ტიტანი", engName: "Titanium", mass: 47.867, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 4", discovery: "უილიამ გრეგორი (1791)", desc: "ფოლადივით მტკიცე, მაგრამ 45%-ით მსუბუქი და ბიოთავსებადი ლითონი. გამოიყენება კოსმოსურ ხომალდებსა და მედიცინაში იმპლანტებისთვის." },
+            { number: 24, symbol: "Cr", geoName: "ქრომი", engName: "Chromium", mass: 51.996, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 6", discovery: "ლუი ვოკლენი (1797)", desc: "მაღალი სიმაგრის ბზინვარე მეტალი. უჟანგავი ფოლადისა და ქრომირებული დამცავი ფენების უმნიშვნელოვანესი კომპონენტი." },
+            { number: 25, symbol: "Mn", geoName: "მარგანეცი", engName: "Manganese", mass: 54.938, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 7", discovery: "იოჰან განნი (1774)", desc: "საქართველოში (ჭიათურაში) უხვად მოპოვებული მნიშვნელოვანი ელემენტი. გადამწყვეტია მაღალი ხარისხის ფოლადის გამოსადნობად." },
+            { number: 26, symbol: "Fe", geoName: "რკინა", engName: "Iron", mass: 55.845, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 8", discovery: "უძველესი დროიდან", desc: "კაცობრიობის ცივილიზაციის საძირკველი. შედის სისხლის ჰემოგლობინში და უზრუნველყოფს ჟანგბადის ტრანსპორტირებას ორგანიზმში." },
+            { number: 27, symbol: "Co", geoName: "კობალტი", engName: "Cobalt", mass: 58.933, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 9", discovery: "გეორგ ბრანდტი (1735)", desc: "მაგნიტური თვისებების მქონე ლითონი. შედის ვიტამინ B12-ის შემადგენლობაში და გამოიყენება სუპერშენადნობებში." },
+            { number: 28, symbol: "Ni", geoName: "ნიკელი", engName: "Nickel", mass: 58.693, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 10", discovery: "აქსელ კრონსტედტი (1751)", desc: "კოროზიამედეგი ვერცხლისფერი ლითონი. გამოიყენება მონეტების, უჟანგავი ფოლადისა და ბატარეების დასამზადებლად." },
+            { number: 29, symbol: "Cu", geoName: "სპილენძი", engName: "Copper", mass: 63.546, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 11", discovery: "უძველესი დროიდან", desc: "კაცობრიობის მიერ პირველად ათვისებული ლითონი. ფლობს უმაღლეს ელექტრო- და თბოგამტარობას." },
+            { number: 30, symbol: "Zn", geoName: "თუთია", engName: "Zinc", mass: 65.38, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 12", discovery: "ანდრეას მარგრაფი (1746)", desc: "გამოიყენება რკინის მოთითბერებისა და გალვანიზაციისთვის ჟანგისგან დასაცავად, ასევე იმუნური სისტემის გასაძლიერებლად." },
+            { number: 31, symbol: "Ga", geoName: "გალიუმი", engName: "Gallium", mass: 69.723, category: "post-transition", catName: "პოსტ-გარდამავალი", phase: "მყარი (დნება 29.8°C)", group: "პერიოდი 4, ჯგუფი 13", discovery: "პოლ ემილ ლეკოკ დე ბუაბოდრანი (1875)", desc: "ლითონი, რომელიც ხელის გულზე დნება (29.8°C). ფართოდ გამოიყენება ნახევარგამტარულ ლაზერებსა და მზის პანელებში." },
+            { number: 32, symbol: "Ge", geoName: "გერმანიუმი", engName: "Germanium", mass: 72.63, category: "metalloid", catName: "მეტალოიდი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 14", discovery: "კლემენს ვინკლერი (1886)", desc: "მეტალოიდი, რომლის თვისებებიც მენდელეევმა წინასწარ იწინასწარმეტყველა. გამოიყენება ინფრაწითელ ოპტიკასა და ბოჭკოვან კაბელებში." },
+            { number: 33, symbol: "As", geoName: "დარიშხანი", engName: "Arsenic", mass: 74.922, category: "metalloid", catName: "მეტალოიდი", phase: "მყარი", group: "პერიოდი 4, ჯგუფი 15", discovery: "ალბერტუს მაგნუსი (1250)", desc: "ისტორიულად ცნობილი შხამი და მეტალოიდი. მცირე დოზებით გამოიყენება ნახევარგამტარებსა და სპეციალურ ოპტიკაში." },
+            { number: 35, symbol: "Br", geoName: "ბრომი", engName: "Bromine", mass: 79.904, category: "halogen", catName: "ჰალოგენი", phase: "თხევადი", group: "პერიოდი 4, ჯგუფი 17", discovery: "ანტუან ბალარი (1826)", desc: "ერთადერთი თხევადი არამეტალი ოთახის ტემპერატურაზე. მძაფრი სუნის მქონე მუქი წითელი აქროლადი სითხეა." },
+            { number: 36, symbol: "Kr", geoName: "კრიპტონი", engName: "Krypton", mass: 83.798, category: "noble", catName: "ინერტული აირი", phase: "აირი", group: "პერიოდი 4, ჯგუფი 18", discovery: "უილიამ რამზაი (1898)", desc: "ინერტული აირი, რომელიც გამოიყენება მაღალი სიმძლავრის ფოტოგანათებებსა და ენერგოდამზოგავ მინაპაკეტებში." },
+            { number: 38, symbol: "Sr", geoName: "სტრონციუმი", engName: "Strontium", mass: 87.62, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 5, ჯგუფი 2", discovery: "ადაირ კროუფორდი (1790)", desc: "აქტიური ტუტემიწა ლითონი. მისი მარილები პიროტექნიკასა და ფეიერვერკებს ანიჭებს კაშკაშა ალისფერ-წითელ ფერს." },
+            { number: 47, symbol: "Ag", geoName: "ვერცხლი", engName: "Silver", mass: 107.87, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 5, ჯგუფი 11", discovery: "უძველესი დროიდან", desc: "ყველა ელემენტს შორის საუკეთესო ელექტრო- და თბოგამტარი ლითონი. გააჩნია ძლიერი ანტიბაქტერიული თვისებები." },
+            { number: 50, symbol: "Sn", geoName: "კალა", engName: "Tin", mass: 118.71, category: "post-transition", catName: "პოსტ-გარდამავალი", phase: "მყარი", group: "პერიოდი 5, ჯგუფი 14", discovery: "უძველესი დროიდან", desc: "ბრინჯაოს ხანის ძირითადი კომპონენტი სპილენძთან ერთად. გამოიყენება ელექტრონიკის სარჩილავად და თუნუქის წარმოებაში." },
+            { number: 53, symbol: "I", geoName: "იოდი", engName: "Iodine", mass: 126.90, category: "halogen", catName: "ჰალოგენი", phase: "მყარი", group: "პერიოდი 5, ჯგუფი 17", discovery: "ბერნარ კურტუა (1811)", desc: "მუქი იისფერი კრისტალური ჰალოგენი. აუცილებელია ფარისებრი ჯირკვლის ნორმალური ფუნქციონირებისთვის." },
+            { number: 54, symbol: "Xe", geoName: "ქსენონი", engName: "Xenon", mass: 131.29, category: "noble", catName: "ინერტული აირი", phase: "აირი", group: "პერიოდი 5, ჯგუფი 18", discovery: "უილიამ რამზაი (1898)", desc: "მძიმე ინერტული აირი. გამოიყენება საავტომობილო ქსენონის ფარებში, იონურ კოსმოსურ ძრავებსა და ანესთეზიაში." },
+            { number: 56, symbol: "Ba", geoName: "ბარიუმი", engName: "Barium", mass: 137.33, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 6, ჯგუფი 2", discovery: "კარლ შეელე (1774)", desc: "მძიმე ტუტემიწა ლითონი. მისი სულფატი გამოიყენება მედიცინაში რენტგენოკონტრასტულ ნივთიერებად კუჭ-ნაწლავის გამოკვლევისას." },
+            { number: 63, symbol: "Eu", geoName: "ევროპიუმი", engName: "Europium", mass: 151.96, category: "lanthanide", catName: "ლანთანოიდი", phase: "მყარი", group: "პერიოდი 6, ლანთანოიდები", discovery: "ეჟენ-ანატოლ დემარსე (1896)", desc: "იშვიათმიწა ელემენტი. გამოიყენება ევროს ბანკნოტების ყალბისგან დამცავ ფოსფორესცენტურ ნიშნებსა და წითელ ფოსფორებში." },
+            { number: 74, symbol: "W", geoName: "ვოლფრამი", engName: "Tungsten", mass: 183.84, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 6, ჯგუფი 6", discovery: "ძმები ელუიარები (1783)", desc: "ყველაზე მაღალი დნობის ტემპერატურის მქონე ლითონი (3422°C). გამოიყენება ნათურების სპირალებსა და ჯავშანგამტან ჭურვებში." },
+            { number: 78, symbol: "Pt", geoName: "პლატინა", engName: "Platinum", mass: 195.08, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 6, ჯგუფი 10", discovery: "ანტონიო დე ულოა (1735)", desc: "ძვირფასი, უკიდურესად მდგრადი კეთილშობილი ლითონი. შეუცვლელი კატალიზატორია ავტომობილების გამონაბოლქვის ფილტრებში." },
+            { number: 79, symbol: "Au", geoName: "ოქრო", engName: "Gold", mass: 196.97, category: "transition", catName: "გარდამავალი ლითონი", phase: "მყარი", group: "პერიოდი 6, ჯგუფი 11", discovery: "უძველესი დროიდან", desc: "კეთილშობილი ლითონი, მსოფლიო ფინანსური სისტემის ისტორიული საყრდენი. არ იჟანგება და გააჩნია შეუდარებელი პლასტიკურობა." },
+            { number: 80, symbol: "Hg", geoName: "ვერცხლისწყალი", engName: "Mercury", mass: 200.59, category: "transition", catName: "გარდამავალი ლითონი", phase: "თხევადი", group: "პერიოდი 6, ჯგუფი 12", discovery: "უძველესი დროიდან", desc: "ერთადერთი თხევადი ლითონი ოთახის ტემპერატურაზე. ისტორიულად გამოიყენებოდა თერმომეტრებსა და ბარომეტრებში." },
+            { number: 82, symbol: "Pb", geoName: "ტყვია", engName: "Lead", mass: 207.2, category: "post-transition", catName: "პოსტ-გარდამავალი", phase: "მყარი", group: "პერიოდი 6, ჯგუფი 14", discovery: "უძველესი დროიდან", desc: "მძიმე, რბილი ლითონი. მაღალი სიმკვრივის გამო გამოიყენება რადიაციული და რენტგენული გამოსხივებისგან დამცავ ეკრანებად." },
+            { number: 88, symbol: "Ra", geoName: "რადიუმი", engName: "Radium", mass: 226, category: "alkaline", catName: "ტუტემიწა ლითონი", phase: "მყარი", group: "პერიოდი 7, ჯგუფი 2", discovery: "მარი და პიერ კიურები (1898)", desc: "ინტენსიურად რადიოაქტიური ელემენტი, რომლის აღმოჩენამ საფუძველი ჩაუყარა ბირთვულ ფიზიკასა და რადიოთერაპიას." },
+            { number: 92, symbol: "U", geoName: "ურანი", engName: "Uranium", mass: 238.03, category: "actinide", catName: "აქტინოიდი", phase: "მყარი", group: "პერიოდი 7, ჯგუფი 3", discovery: "მარტინ კლაპროთი (1789)", desc: "რადიოაქტიური მძიმე ლითონი. ატომური ელექტროსადგურებისა და ბირთვული ენერგეტიკის უმთავრესი საწვავი." }
+        ];
+
+        // Transliteration Map: ქართული ასოები ➔ ინგლისური ლათინური ასოები
+        const geoToEngMap = {
+            'ა': 'a', 'ბ': 'b', 'გ': 'g', 'დ': 'd', 'ე': 'e', 'ვ': 'v', 'ზ': 'z',
+            'თ': 't', 'ი': 'i', 'კ': 'k', 'ლ': 'l', 'მ': 'm', 'ნ': 'n', 'ო': 'o',
+            'პ': 'p', 'ჟ': 'zh', 'რ': 'r', 'ს': 's', 'ტ': 't', 'უ': 'u', 'ფ': 'f',
+            'ქ': 'k', 'ღ': 'gh', 'ყ': 'k', 'შ': 'sh', 'ჩ': 'ch', 'ც': 'ts', 'ძ': 'dz',
+            'წ': 'ts', 'ჭ': 'ch', 'ხ': 'kh', 'ჯ': 'j', 'ჰ': 'h'
+        };
+
+        function transliterateGeoToEng(text) {
+            let res = '';
+            for (let ch of text.toLowerCase()) {
+                res += geoToEngMap[ch] || ch;
+            }
+            return res;
+        }
+
+        // Category Color Mapping
+        function getCategoryColor(cat) {
+            const map = {
+                'alkali': 'var(--cat-alkali)',
+                'alkaline': 'var(--cat-alkaline)',
+                'transition': 'var(--cat-transition)',
+                'post-transition': 'var(--cat-post-trans)',
+                'metalloid': 'var(--cat-metalloid)',
+                'nonmetal': 'var(--cat-nonmetal)',
+                'halogen': 'var(--cat-halogen)',
+                'noble': 'var(--cat-noble)',
+                'lanthanide': 'var(--cat-lanthanide)',
+                'actinide': 'var(--cat-actinide)'
+            };
+            return map[cat] || 'var(--primary)';
+        }
+
+        // ----------------------------------------------------
+        // Navigation / Tab Switching
+        // ----------------------------------------------------
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+            const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+            if (targetBtn) targetBtn.classList.add('active');
+
+            const targetPanel = document.getElementById(`tab-${tabId}`);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            if (tabId === 'quiz' && !quizCurrentElement) {
+                generateQuizQuestion();
+            }
+        }
+
+        // ----------------------------------------------------
+        // TAB 1: Elements Catalog (Explorer)
+        // ----------------------------------------------------
+        let currentCategoryFilter = 'all';
+
+        function setCategoryFilter(cat) {
+            currentCategoryFilter = cat;
+            document.querySelectorAll('#categoryChips .chip').forEach(c => {
+                c.classList.remove('active');
+                if (c.getAttribute('onclick').includes(`'${cat}'`)) {
+                    c.classList.add('active');
+                }
+            });
+            filterExplorer();
+        }
+
+        function renderElementCard(el) {
+            const color = getCategoryColor(el.category);
+            return `
+                <div class="element-card" style="--accent-color: ${color};" onclick="openModal(${el.number})">
+                    <div class="card-top">
+                        <span class="card-num">${el.number}</span>
+                        <span class="card-mass-top">${el.mass}</span>
+                    </div>
+                    <div class="card-symbol">${el.symbol}</div>
+                    <div class="card-bottom">
+                        <span class="card-geo-name">${el.geoName}</span>
+                        <span class="card-eng-name">${el.engName}</span>
+                        <span class="card-category-tag">${el.catName}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterExplorer() {
+            const query = document.getElementById('explorerSearch').value.toLowerCase().trim();
+            const grid = document.getElementById('explorerGrid');
+            const countEl = document.getElementById('explorerCount');
+
+            const filtered = elementsDB.filter(el => {
+                const matchesCat = (currentCategoryFilter === 'all' || el.category === currentCategoryFilter);
+                if (!matchesCat) return false;
+
+                if (!query) return true;
+                const matchNum = el.number.toString() === query;
+                const matchSym = el.symbol.toLowerCase().startsWith(query) || el.symbol.toLowerCase() === query;
+                const matchGeo = el.geoName.toLowerCase().includes(query);
+                const matchEng = el.engName.toLowerCase().includes(query);
+                return matchNum || matchSym || matchGeo || matchEng;
+            });
+
+            countEl.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">🔬</span>
+                        <div class="empty-state-text">ელემენტი ვერ მოიძებნა</div>
+                        <div class="empty-state-sub">სცადეთ სხვა სახელი, ქიმიური სიმბოლო ან შეცვალეთ კატეგორიის ფილტრი</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(renderElementCard).join('');
+        }
+
+        // ----------------------------------------------------
+        // TAB 2: Name to Chemical Elements
+        // ----------------------------------------------------
+        function setExampleName(name) {
+            const input = document.getElementById('nameInput');
+            input.value = name;
+            processNameInput();
+        }
+
+        // Greedy Element Spelling Algorithm for the Banner (e.g. Breaking Bad style)
+        function spellWordWithElements(word) {
+            const clean = word.trim();
+            if (!clean) return [];
+
+            const symMap = new Map();
+            elementsDB.forEach(e => {
+                symMap.set(e.symbol.toLowerCase(), e);
+            });
+
+            const tokens = [];
+            let i = 0;
+            while (i < clean.length) {
+                if (clean[i] === ' ') {
+                    tokens.push({ type: 'space' });
+                    i++;
+                    continue;
+                }
+
+                // Check 2-letter match first
+                if (i + 1 < clean.length) {
+                    const twoChar = clean.substring(i, i + 2).toLowerCase();
+                    if (symMap.has(twoChar)) {
+                        tokens.push({ type: 'element', data: symMap.get(twoChar) });
+                        i += 2;
+                        continue;
+                    }
+                }
+
+                // Check 1-letter match
+                const oneChar = clean[i].toLowerCase();
+                if (symMap.has(oneChar)) {
+                    tokens.push({ type: 'element', data: symMap.get(oneChar) });
+                    i += 1;
+                    continue;
+                }
+
+                // Fallback regular character
+                tokens.push({ type: 'char', char: clean[i].toUpperCase() });
+                i++;
+            }
+            return tokens;
+        }
+
+        function processNameInput() {
+            const rawVal = document.getElementById('nameInput').value.trim();
+            const bannerContainer = document.getElementById('nameBannerContainer');
+            const tilesRow = document.getElementById('nameTilesRow');
+            const grid = document.getElementById('nameGrid');
+            const resultsBar = document.getElementById('nameResultsBar');
+            const countEl = document.getElementById('nameCount');
+
+            if (!rawVal) {
+                bannerContainer.style.display = 'none';
+                resultsBar.style.display = 'none';
+                grid.innerHTML = '';
+                return;
+            }
+
+            // Convert Georgian input to English for chemistry matching
+            const engStr = transliterateGeoToEng(rawVal);
+            const lowerEng = engStr.toLowerCase();
+
+            // 1. Generate Spelled Banner
+            const tokens = spellWordWithElements(engStr);
+            bannerContainer.style.display = 'flex';
+            tilesRow.innerHTML = tokens.map(t => {
+                if (t.type === 'space') {
+                    return `<div style="width:20px;"></div>`;
+                }
+                if (t.type === 'element') {
+                    const color = getCategoryColor(t.data.category);
+                    return `
+                        <div class="name-tile" style="--tile-color: ${color};" onclick="openModal(${t.data.number})">
+                            <span class="tile-num">${t.data.number}</span>
+                            <span class="tile-sym">${t.data.symbol}</span>
+                            <span class="tile-name">${t.data.geoName}</span>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="name-tile regular-char">
+                        <span class="tile-num">-</span>
+                        <span class="tile-sym">${t.char}</span>
+                        <span class="tile-name">ასო</span>
+                    </div>
+                `;
+            }).join('');
+
+            // 2. Find All Elements Contained in Name Letters
+            const matchedElements = elementsDB.filter(el => {
+                const sym = el.symbol.toLowerCase();
+                if (sym.length === 1) {
+                    return lowerEng.includes(sym);
+                } else {
+                    return lowerEng.includes(sym[0]) && lowerEng.includes(sym[1]);
+                }
+            });
+
+            resultsBar.style.display = 'flex';
+            countEl.textContent = matchedElements.length;
+
+            if (matchedElements.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">⚠️</span>
+                        <div class="empty-state-text">ელემენტები ვერ მოიძებნა</div>
+                        <div class="empty-state-sub">სცადეთ სხვა სახელის ჩაწერა</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = matchedElements.map(renderElementCard).join('');
+        }
+
+        // ----------------------------------------------------
+        // TAB 3: Initials to Chemical Elements
+        // ----------------------------------------------------
+        let activeAlpha = '';
+
+        function buildAlphabetButtons() {
+            const alphaGrid = document.getElementById('alphaGrid');
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+            alphaGrid.innerHTML = letters.map(letter => `
+                <button class="alpha-btn" id="btn-alpha-${letter}" onclick="selectAlphabetLetter('${letter}')">${letter}</button>
+            `).join('');
+        }
+
+        function selectAlphabetLetter(letter) {
+            document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+            if (activeAlpha === letter) {
+                activeAlpha = '';
+                document.getElementById('initialInput').value = '';
+            } else {
+                activeAlpha = letter;
+                const btn = document.getElementById(`btn-alpha-${letter}`);
+                if (btn) btn.classList.add('active');
+                document.getElementById('initialInput').value = letter;
+            }
+            processInitialInput();
+        }
+
+        function processInitialInput() {
+            const rawVal = document.getElementById('initialInput').value.trim();
+            const grid = document.getElementById('initialGrid');
+            const countEl = document.getElementById('initialCount');
+
+            if (!rawVal) {
+                countEl.textContent = '0';
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">🔤</span>
+                        <div class="empty-state-text">ჩაწერეთ სახელი ან აირჩიეთ ასო ზემოთ</div>
+                        <div class="empty-state-sub">მაგალითად: Giorgi, Badri, Eliso, Maia...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const engVal = transliterateGeoToEng(rawVal).toLowerCase();
+            const firstLetter = engVal.charAt(0);
+            const firstTwoLetters = engVal.substring(0, 2);
+
+            // 1. ჯერ ეძებს პირველი 2 ასოს მიხედვით (მაგ: Badri -> Ba, Giorgi -> Ge)
+            let matched = elementsDB.filter(el => el.symbol.toLowerCase().startsWith(firstTwoLetters));
+            
+            // 2. თუ 2 ასოთი ვერ იპოვა, ეძებს პირველი 1 ასოს მიხედვით (მაგ: Eliso -> Eu)
+            if (matched.length === 0) {
+                matched = elementsDB.filter(el => el.symbol.toLowerCase().startsWith(firstLetter));
+            }
+
+            countEl.textContent = matched.length;
+
+            if (matched.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">⚠️</span>
+                        <div class="empty-state-text">ამ ინიციალით ელემენტი ვერ მოიძებნა</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = matched.map(renderElementCard).join('');
+        }
+
+        // ----------------------------------------------------
+        // TAB 4: Interactive Quiz Engine
+        // ----------------------------------------------------
+        let quizScore = 0;
+        let quizTotal = 0;
+        let quizCurrentElement = null;
+        let quizAnswered = false;
+
+        function generateQuizQuestion() {
+            quizAnswered = false;
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('quizFeedback').innerHTML = '';
+
+            // Random element from database
+            const randomEl = elementsDB[Math.floor(Math.random() * elementsDB.length)];
+            quizCurrentElement = randomEl;
+
+            document.getElementById('quizElemNum').textContent = randomEl.number;
+            document.getElementById('quizElemSym').textContent = randomEl.symbol;
+            document.getElementById('quizElemMass').textContent = randomEl.mass;
+
+            // Generate 3 wrong options
+            const wrongOptions = elementsDB
+                .filter(e => e.number !== randomEl.number)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 3);
+
+            const allOptions = [randomEl, ...wrongOptions].sort(() => 0.5 - Math.random());
+
+            const optionsGrid = document.getElementById('quizOptionsGrid');
+            optionsGrid.innerHTML = allOptions.map(opt => `
+                <button class="quiz-opt-btn" onclick="handleQuizAnswer(${opt.number}, this)">
+                    ${opt.geoName} (${opt.engName})
+                </button>
+            `).join('');
+        }
+
+        function handleQuizAnswer(selectedNum, btnElement) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+            quizTotal++;
+
+            const feedbackEl = document.getElementById('quizFeedback');
+            const allOptionBtns = document.querySelectorAll('.quiz-opt-btn');
+
+            if (selectedNum === quizCurrentElement.number) {
+                quizScore++;
+                btnElement.classList.add('correct');
+                feedbackEl.innerHTML = `<span style="color:var(--success)">🎉 სწორია! ${quizCurrentElement.geoName} (${quizCurrentElement.symbol})</span>`;
+            } else {
+                btnElement.classList.add('wrong');
+                allOptionBtns.forEach(btn => {
+                    if (btn.textContent.includes(quizCurrentElement.geoName)) {
+                        btn.classList.add('correct');
+                    }
+                });
+                feedbackEl.innerHTML = `<span style="color:var(--accent)">❌ არასწორია. სწორი პასუხია: <b>${quizCurrentElement.geoName}</b></span>`;
+            }
+
+            document.getElementById('quizScore').textContent = quizScore;
+            document.getElementById('quizTotal').textContent = quizTotal;
+            document.getElementById('nextQuestionBtn').style.display = 'inline-flex';
+        }
+
+        // ----------------------------------------------------
+        // Modal Handlers
+        // ----------------------------------------------------
+        function openModal(elementNumber) {
+            const el = elementsDB.find(e => e.number === elementNumber);
+            if (!el) return;
+
+            const color = getCategoryColor(el.category);
+            const symbolBox = document.getElementById('modalSymbolBox');
+            symbolBox.style.borderColor = color;
+            document.getElementById('modalSym').style.color = color;
+
+            document.getElementById('modalNum').textContent = el.number;
+            document.getElementById('modalSym').textContent = el.symbol;
+            document.getElementById('modalGeoName').textContent = el.geoName;
+            document.getElementById('modalEngName').textContent = `${el.engName} (${el.symbol})`;
+            document.getElementById('modalCategory').textContent = el.catName;
+            document.getElementById('modalCategory').style.color = color;
+
+            document.getElementById('modalMass').textContent = `${el.mass} u`;
+            document.getElementById('modalPhase').textContent = el.phase;
+            document.getElementById('modalGroup').textContent = el.group;
+            document.getElementById('modalDiscovery').textContent = el.discovery;
+            document.getElementById('modalDescription').textContent = el.desc;
+
+            document.getElementById('elementModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('elementModal').classList.remove('open');
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'elementModal') {
+                closeModal();
+            }
+        }
+
+        // Keyboard close modal on Escape
+        window.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ----------------------------------------------------
+        // Initialization
+        // ----------------------------------------------------
+        window.addEventListener('DOMContentLoaded', () => {
+            filterExplorer();
+            buildAlphabetButtons();
+        });
+    </script>
+</body>
+</html>
